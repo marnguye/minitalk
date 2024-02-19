@@ -28,10 +28,9 @@ void	handle_signal(int signal)
 	static int	j;
 	int			num;
 
+	num = 0;
 	if (signal == SIGUSR1)
 		num = 0;
-	else
-		num = 1;
 	j = (j << 1) + num;
 	i++;
 	if (i == 8)
@@ -46,7 +45,8 @@ int	main(void)
 {
 	struct sigaction	action;
 
-	action.sa_flags = SA_RESTART;
+	action.sa_handler = handle_signal;
+	action.sa_flags = 0;
 	sigaction(SIGUSR1, &action, NULL);
 	sigaction(SIGUSR2, &action, NULL);
 	write(1, "What's up bro welcome to my minitalk. Let's chat a bit.", 55);
@@ -54,6 +54,6 @@ int	main(void)
 	write(1, "PID: ", 5);
 	ft_putnbr(getpid());
 	while (1)
-		usleep(100);
+		usleep(1);
 	return (0);
 }

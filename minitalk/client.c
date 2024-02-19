@@ -14,9 +14,9 @@
 
 int	ft_atoi(char *str)
 {
-	long	num;
-	int		i;
-	int		len;
+	int	num;
+	int	i;
+	int	len;
 
 	len = 0;
 	while (str && str[len])
@@ -34,16 +34,15 @@ void	send_signal(int pid, char c)
 	int	i;
 	int	j;
 
-	i = c;
 	i = 7;
+	j = 128;
 	while (i >= 0)
 	{
-		if (j == 0 || (j & 1) == 0)
-			arr[i] = 0;
-		else if ((j & 1) == 1)
+		if (c & j)
 			arr[i] = 1;
-		if (j > 0)
-			j >>= 1;
+		else
+			arr[i] = 0;
+		j >>= 1;
 		i--;
 	}
 	while (++i < 8)
@@ -58,7 +57,7 @@ void	send_signal(int pid, char c)
 
 int	main(int argc, char **argv)
 {
-	int	pid;
+	long	pid;
 
 	if (argc != 3)
 		write(1, "Error", 6);
