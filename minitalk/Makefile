@@ -1,46 +1,25 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: marnguye <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/02/19 15:27:29 by marnguye          #+#    #+#              #
-#    Updated: 2024/02/19 15:27:34 by marnguye         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+name	=	minitalk
 
-CC = gcc
+CC		=	cc
+CFLAGS	=	-Wall -Wextra -Werror
+RM		=	rm -f
 
-CFLAGS = -Werror -Wall -Wextra
+CLIENT	=	client
+SERVER	=	server
 
-SERVER = server
-SERVER_SRCS = server.o
+$(SERVER):	$(SERVER).c minitalk.h
+			@$(CC) $(CFLAGS) -o $(SERVER) $(SERVER).c
 
-CLIENT = client
-CLIENT_SRCS = client.o
+$(CLIENT):	$(CLIENT).c minitalk.h
+			@$(CC) $(CFLAGS) -o $(CLIENT) $(CLIENT).c
 
-all : $(SERVER) $(CLIENT)
+$(NAME):	$(SERVER) $(CLIENT)
 
-$(CLIENT) : $(CLIENT_SRCS)
-	@$(CC) $(CLIENT_SRCS) -o $(CLIENT)
-	@printf "\e[32m$@ built🗣\e[0m\n"
+clean:
+			@$(RM) $(CLIENT) $(SERVER)
 
-$(SERVER) : $(SERVER_SRCS)
-	@$(CC) $(SERVER_SRCS) -o $(SERVER)
-	@printf "\e[32m$@ builti✔\e[0m\n"
+fclean:		clean
 
-%.o : %.c
-	@$(CC) $(FLAGS) $< -c
+re:			fclean all
 
-clean :
-	@rm -f client.o server.o
-	@printf "\e[31mclean done\e[0m\n"
-
-fclean : clean
-	@rm -f $(SERVER) $(CLIENT)
-	@printf "\e[31mfclean done\e[0m\n"
-
-re : fclean all
-
-.PHONY: all clean fclean re
+.PHONY: 	all clean fclean re

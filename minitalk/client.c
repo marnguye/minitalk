@@ -1,48 +1,39 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marnguye <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/20 16:45:58 by marnguye          #+#    #+#             */
-/*   Updated: 2024/01/20 16:46:02 by marnguye         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minitalk.h"
 
-int	ft_atoi(char *str)
+int ft_atoi(const char *str)
 {
-	int	num;
-	int	i;
-	int	len;
+	int result;
+	int sign;
 
-	len = 0;
-	while (str && str[len])
-		len++;
-	i = 0;
-	num = 0;
-	while (i < len)
-		num = (num * 10) + (str[i++] - 48);
-	return (num);
+	result = 0;
+	sign = 1;
+	while (*str == ' ' || (*str >= '\t' && *str <= '\r'))
+		str++;
+	if (*str == '-')
+		sign = -1;
+	else if (*str == '+')
+		sign = 1;
+	while (*str >= '0' && *str <= '9')
+		result = result * 10 + (*str++ - '0');
+	return (result * sign);
 }
 
-void	send_signal(int pid, char c)
+void send_signal(int pid, char c)
 {
-	int	arr[8];
-	int	i;
-	int	j;
+	int arr[8];
+	int i;
+	int j;
 
-	i = 7;
 	j = 128;
+	i = 7;
 	while (i >= 0)
 	{
 		if (c & j)
 			arr[i] = 1;
 		else
 			arr[i] = 0;
-		j >>= 1;
+		if (j > 0)
+			j >>= 1;
 		i--;
 	}
 	while (++i < 8)
@@ -51,16 +42,16 @@ void	send_signal(int pid, char c)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-		usleep(50);
+		usleep(100);
 	}
 }
 
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	long	pid;
+	int pid;
 
 	if (argc != 3)
-		write(1, "Error", 6);
+		write(1, "Error bro, something is wrong!", 31);
 	else
 	{
 		pid = ft_atoi(argv[1]);
