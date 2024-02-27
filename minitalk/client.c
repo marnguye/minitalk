@@ -1,21 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marnguye <marnguye@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/23 13:05:35 by marnguye          #+#    #+#             */
-/*   Updated: 2024/02/23 14:44:53 by marnguye         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minitalk.h"
 
-int	ft_atoi(const char *str)
+int ft_atoi(const char *str)
 {
-	int	result;
-	int	sign;
+	int result;
+	int sign;
 
 	result = 0;
 	sign = 1;
@@ -30,28 +18,31 @@ int	ft_atoi(const char *str)
 	return (result * sign);
 }
 
-void	send_signal(int pid, char c)
+void send_bit(int pid, char c, int bit)
 {
-	send_bit(pid, c, 0);
+	int mask;
+	int signal;
+
+	if (bit < 0)
+		return;
+	mask = 1 << bit;
+	if (c & mask)
+		signal = SIGUSR2;
+	else
+		signal = SIGUSR1;
+	kill(pid, signal);
+	usleep(100);
+	send_bit(pid, c, bit - 1);
 }
 
-void	send_bit(int pid, char c, int i)
+void send_signal(int pid, char c)
 {
-	if (i < 8)
-	{
-		if (c & (1 << i))
-			kill(pid, SIGUSR2);
-		else
-			kill(pid, SIGUSR1);
-		usleep(100);
-		send_bit(pid, c, i + 1);
-	}
+	send_bit(pid, c, 7);
 }
 
-
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	int	pid;
+	int pid;
 
 	if (argc != 3)
 		write(1, "Error bro, something is wrong!", 31);
